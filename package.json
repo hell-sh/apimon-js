@@ -1,0 +1,23 @@
+{
+  "name": "apimon",
+  "version": "1.0.0",
+  "description": "An abstraction for Apimon's HTTP APIs for maximum levels of Javascript.",
+  "main": "apimon.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hell-sh/apimon-js.git"
+  },
+  "keywords": [
+    "apimon",
+    "http",
+    "api",
+    "client",
+    "client library"
+  ],
+  "author": "Hell.sh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hell-sh/apimon-js/issues"
+  },
+  "homepage": "https://github.com/hell-sh/apimon-js#readme"
+}
