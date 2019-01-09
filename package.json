@@ -1,7 +1,7 @@
 {
   "name": "apimon",
-  "version": "1.0.0",
-  "description": "An abstraction for Apimon's HTTP APIs for maximum levels of Javascript.",
+  "version": "1.0.1",
+  "description": "An abstraction for Apimon's HTTP APIs in Javascript.",
   "main": "apimon.js",
   "repository": {
     "type": "git",
