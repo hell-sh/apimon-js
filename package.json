@@ -1,6 +1,6 @@
 {
   "name": "apimon",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An abstraction for Apimon's HTTP APIs in Javascript.",
   "main": "apimon.js",
   "repository": {
@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/hell-sh/apimon-js/issues"
   },
-  "homepage": "https://github.com/hell-sh/apimon-js#readme"
+  "homepage": "https://github.com/hell-sh/apimon-js#readme",
+  "dependencies": {
+    "follow-redirects": "^1.6.1"
+  }
 }
