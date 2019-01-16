@@ -12,42 +12,51 @@ let expose = (name, func) => {
 }
 if(typeof window != "undefined")
 {
-	window.apimon = {};	
+	window.apimon = {};
 }
 
 let ajax = url=>new Promise((resolve, reject)=>{
 	if(typeof require != "undefined")
 	{
-		require("follow-redirects").https.get(url, client=>{
-			let data="";
-			client.on("data", chunk=>data+=chunk);
-			client.on("end", ()=>{
-				let json = client.headers["content-type"] == "application/json" ? JSON.parse(data) : null;
-				if(client.statusCode == 200)
+		let req = require("https").get(url, res=>{
+			let data = "";
+			res.on("data", chunk=>data+=chunk);
+			res.on("end", ()=>{
+				if(res.statusCode == 301 && res.headers["location"])
 				{
-					if(json)
+					ajax("https://apimon.de" + res.headers["location"]).then(resolve).catch(reject);
+				}
+				else
+				{
+					let json = (res.headers["content-type"] == "application/json" ? JSON.parse(data) : null);
+					if(res.statusCode == 200)
 					{
-						if(json.error)
+						if(json)
 						{
-							reject(json);
+							if(json.error)
+							{
+								reject(json);
+							}
+							else
+							{
+								resolve(json);
+							}
 						}
 						else
 						{
-							resolve(json);
+							resolve(data);
 						}
 					}
 					else
 					{
-						resolve(data);
+						reject(json ? json : {error: "INVALID_STATUS", got: res.statusCode});
 					}
 				}
-				else
-				{
-					reject(json ? json : {error: "INVALID_STATUS", got: client.statusCode});
-				}
 			});
-			client.on("error", err=>reject({error: "NETWORK_ERROR", got: err}));
 		});
+		req.setTimeout(3000, ()=>reject({error: "NETWORK_ERROR", got: "Request timeout"}));
+		req.on("error", err=>reject({error: "NETWORK_ERROR", got: err}));
+		req.end();
 	}
 	else if(typeof XMLHttpRequest != "undefined")
 	{

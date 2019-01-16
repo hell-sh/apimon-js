@@ -1,13 +1,29 @@
 An abstraction for [Apimon](https://apimon.de/)'s HTTP APIs in Javascript.
 
-- [Examples](https://github.com/hell-sh/apimon-js/tree/master/examples)
+- <a href="https://github.com/hell-sh/apimon-js/tree/master/examples" target="_blank">Examples</a>
 
 ## For Websites
 
     <script src="https://cdn.hell.sh/apimon-js/latest/apimon.js" crossorigin="anonymous"></script>
 
-[Need SRI?](https://cdn.hell.sh/#apimon-js)
+<a href="https://cdn.hell.sh/#apimon-js" target="_blank">Need SRI?</a>
 
-## Error Handling
+## Usage
 
-Because apimon-js is Promise-oriented, the Promise will be rejected with the standard Apimon error object of `error` and `got`, but in addition to `INVALID_ARGUMENT` and `INVALID_ARGUMENT_COUNT`, you might also find `NETWORK_ERROR` and `INVALID_STATUS` to be the value of `error` using apimon-js.
+Once you have included apimon-js either via `const apimon = require("apimon");` or the HTML tag seen above, you can access `apimon` which has a function for each of the [Apimon HTTP APIs](https://apimon.de/http-apis) mapped (except for "Generate QR Code"), e.g. `https://apimon.de/geoip/ip` = `apimon.geoip(ip)`.
+
+Additionally, `apimon.ip()`, `.ipv4()`, and `.ipv6()` functions are available.
+
+All functions will return a Promise, and your resolve and reject functions will be provided with an object, unless it's the resolve function to one of the IP functions, which will return the IP address in plain text.
+
+Some objects will have additional values provided exclusively by apimon-js:
+
+- **country** (including country fields in geoip)
+  - `english_name`
+  - `native_name`
+- **mc**
+  - `initial_name`
+
+### Error Handling
+
+If an error occured, the Promise will be rejected with the standard Apimon error object of `error` and `got`, but in addition to `INVALID_ARGUMENT` and `INVALID_ARGUMENT_COUNT`, you might also find `NETWORK_ERROR` and `INVALID_STATUS` to be the value of `error` using apimon-js.

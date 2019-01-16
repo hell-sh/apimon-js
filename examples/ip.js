@@ -20,4 +20,4 @@ apimon.ip().then(async ip=>{
 	{
 		console.log("IPv" + pref + " seems to be preferred.");
 	}
-}).catch(()=>{});
+}).catch(console.error);
