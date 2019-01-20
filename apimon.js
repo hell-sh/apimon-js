@@ -119,7 +119,7 @@ class ApimonCountry extends ApimonJsonObject
 	}
 }
 
-class ApimonGeoipResult extends ApimonJsonObject
+class ApimonIpResult extends ApimonJsonObject
 {
 	constructor(json)
 	{
@@ -171,9 +171,9 @@ expose("dns", hostname=>new Promise((resolve, reject)=>{
 	.catch(reject);
 }));
 
-expose("geoip", ip=>new Promise((resolve, reject)=>{
-	ajax("https://apimon.de/geoip/" + encodeURIComponent(ip))
-	.then(json=>resolve(new ApimonGeoipResult(json)))
+expose("ip", arg=>new Promise((resolve, reject)=>{
+	ajax("https://apimon.de/ip/" + encodeURIComponent(arg))
+	.then(json=>resolve(new ApimonIpResult(json)))
 	.catch(reject);
 }));
 
@@ -189,17 +189,17 @@ expose("redirect", arg=>new Promise((resolve, reject)=>{
 	.catch(reject);
 }));
 
-expose("ip", ()=>new Promise((resolve, reject)=>{
+expose("myip", ()=>new Promise((resolve, reject)=>{
 	ajax("https://ip.apimon.de/")
 	.then(ip=>resolve(ip))
 	.catch(reject);
 }));
-expose("ipv4", ()=>new Promise((resolve, reject)=>{
+expose("myipv4", ()=>new Promise((resolve, reject)=>{
 	ajax("https://ipv4.apimon.de/")
 	.then(ip=>resolve(ip))
 	.catch(reject);
 }));
-expose("ipv6", ()=>new Promise((resolve, reject)=>{
+expose("myipv6", ()=>new Promise((resolve, reject)=>{
 	ajax("https://ipv6.apimon.de/")
 	.then(ip=>resolve(ip))
 	.catch(reject);
