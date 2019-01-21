@@ -93,75 +93,16 @@ let ajax = url=>new Promise((resolve, reject)=>{
 	{
 		reject({error: "NETWORK_ERROR", got: "Found no method of interacting with the internet. What environment have you put me in?!"});
 	}
-})
-
-class ApimonJsonObject
-{
-	constructor(json, excludes = [])
-	{
-		for(let key in json)
-		{
-			if(excludes.indexOf(key) == -1)
-			{
-				this[key] = json[key];
-			}
-		}
-	}
-}
-
-class ApimonCountry extends ApimonJsonObject
-{
-	constructor(json)
-	{
-		super(json);
-		this.english_name = json.name.EN;
-		this.native_name = json.name[json.language.code];
-	}
-}
-
-class ApimonIpResult extends ApimonJsonObject
-{
-	constructor(json)
-	{
-		super(json, ["country", "as"]);
-		if("country"in json)
-		{
-			this.country = new ApimonCountry(json.country);
-		}
-		if("as"in json)
-		{
-			this.as = new ApimonAS(json.as);
-		}
-	}
-}
-
-class ApimonAS extends ApimonJsonObject
-{
-	constructor(json)
-	{
-		super(json, ["country"]);
-		if("country"in json)
-		{
-			this.country = new ApimonCountry(json.country);
-		}
-	}
-}
-
-class ApimonMcResult extends ApimonJsonObject
-{
-	constructor(json)
-	{
-		super(json);
-		if(json.valid)
-		{
-			this.initial_name = json.history[0].name;
-		}
-	}
+}),
+processCountry = json => {
+	json.english_name = json.name.EN;
+	json.native_name = json.name[json.language.code];
+	return json;
 }
 
 expose("country", country=>new Promise((resolve, reject)=>{
 	ajax("https://apimon.de/country/" + encodeURIComponent(country))
-	.then(json=>resolve(new ApimonCountry(json)))
+	.then(json=>resolve(processCountry(json)))
 	.catch(reject);
 }));
 
@@ -173,14 +114,28 @@ expose("dns", hostname=>new Promise((resolve, reject)=>{
 
 expose("ip", arg=>new Promise((resolve, reject)=>{
 	ajax("https://apimon.de/ip/" + encodeURIComponent(arg))
-	.then(json=>resolve(new ApimonIpResult(json)))
-	.catch(reject);
+	.then(json=>{
+		if("country"in json)
+		{
+			json.country = processCountry(json.country);
+		}
+		if("as"in json)
+		{
+			json.as.country = processCountry(json.as.country);
+		}
+		resolve(json);
+	}).catch(reject);
 }));
 
 expose("mc", arg=>new Promise((resolve, reject)=>{
 	ajax("https://apimon.de/mc/" + arg)
-	.then(json=>resolve(new ApimonMcResult(json)))
-	.catch(reject);
+	.then(json=>{
+		if(json.valid)
+		{
+			json.initial_name = json.history[0].name;
+		}
+		resolve(json);
+	}).catch(reject);
 }));
 
 expose("redirect", arg=>new Promise((resolve, reject)=>{

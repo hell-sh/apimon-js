@@ -16,7 +16,7 @@ if(process.argv.length == 3)
 		}
 		else
 		{
-			console.log("Could not find a Minecraft account for", process.argv[2]);
+			console.log("Couldn't find a Minecraft account named", process.argv[2]);
 		}
 	}).catch(error=>{
 		console.error("An error occured:", error);
