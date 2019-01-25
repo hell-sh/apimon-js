@@ -1,5 +1,6 @@
 const apimon = require("../apimon.js");
 
+// JSHint doesn't yet support async so it goes completely nuts here.
 /* jshint ignore:start */
 async function a(ip)
 {
@@ -23,5 +24,7 @@ async function a(ip)
 		console.log("IPv" + pref + " seems to be preferred.");
 	}
 }
+apimon.myip().then(a).catch(code => {
+	console.error("HTTP", code);
+});
 /* jshint ignore:end */
-apimon.myip().then(a).catch(console.error);

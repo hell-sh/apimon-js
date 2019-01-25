@@ -11,8 +11,8 @@ if(process.argv.length == 3)
 		{
 			console.log(result.ip_address + " is an IP address from " + result.country.english_name + " owned by " + result.as.org + " who are based in " + result.as.country.english_name + ".");
 		}
-	}).catch(error=>{
-		console.error("An error occured:", error);
+	}).catch(code => {
+		console.error("HTTP", code);
 	});
 }
 else

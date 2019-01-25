@@ -47,7 +47,9 @@ if(process.argv.length == 3)
 	recursiveLookup(process.argv[2]).then(ips => {
 		console.log("Found " + ips.length + " IP addresses for " + process.argv[2] + ":");
 		console.log(ips);
-	}).catch(console.log);
+	}).catch(code => {
+		console.error("HTTP", code);
+	});
 }
 else
 {

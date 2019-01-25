@@ -20,12 +20,10 @@ All functions will return a Promise, and your resolve and reject functions will 
 
 Some objects will have additional values provided exclusively by apimon-js:
 
-- **country** (including country fields in ip lookup responses)
+- **country**
   - `english_name`
   - `native_name`
 - **mc**
   - `initial_name`
 
-### Error Handling
-
-If an error occured, the Promise will be rejected with the standard Apimon error object of `error` and `got`, but in addition to `INVALID_ARGUMENT` and `INVALID_ARGUMENT_COUNT`, you might also find `NETWORK_ERROR` and `INVALID_STATUS` to be the value of `error` using apimon-js.
+If an error occured, the Promise will be rejected with the HTTP error code or 0 in the case of a network error. See [Error Handling](https://apimon.de/http-apis#errors) for information on what HTTP error codes mean.

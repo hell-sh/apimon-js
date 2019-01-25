@@ -31,31 +31,17 @@ let ajax = url=>new Promise((resolve, reject)=>{
 					let json = (res.headers["content-type"] == "application/json" ? JSON.parse(data) : null);
 					if(res.statusCode == 200)
 					{
-						if(json)
-						{
-							if(json.error)
-							{
-								reject(json);
-							}
-							else
-							{
-								resolve(json);
-							}
-						}
-						else
-						{
-							resolve(data);
-						}
+						resolve(json ? json : data);
 					}
 					else
 					{
-						reject(json ? json : {error: "INVALID_STATUS", got: res.statusCode});
+						reject(res.statusCode);
 					}
 				}
 			});
 		});
-		req.setTimeout(3000, ()=>reject({error: "NETWORK_ERROR", got: "Request timeout"}));
-		req.on("error", err=>reject({error: "NETWORK_ERROR", got: err}));
+		req.setTimeout(3000, ()=>reject(0));
+		req.on("error", err=>reject(0));
 		req.end();
 	}
 	else if(typeof XMLHttpRequest != "undefined")
@@ -64,41 +50,40 @@ let ajax = url=>new Promise((resolve, reject)=>{
 		xhr.addEventListener("load", ()=>{
 			if(xhr.status == 200)
 			{
-				if(xhr.responseJson)
-				{
-					if(xhr.responseJson.error)
-					{
-						reject(xhr.responseJson);
-					}
-					else
-					{
-						resolve(xhr.responseJson);
-					}
-				}
-				else
-				{
-					resolve(xhr.responseText);
-				}
+				resolve(xhr.responseJson ? xhr.responseJson : xhr.responseText);
 			}
 			else
 			{
-				reject(xhr.responseJson ? xhr.responseJson : {error: "INVALID_STATUS", got: xhr.status});
+				reject(xhr.status);
 			}
 		});
-		xhr.addEventListener("error", err=>reject({error: "NETWORK_ERROR", got: err}));
+		xhr.addEventListener("error", err=>reject(0));
 		xhr.open("GET", url);
 		xhr.send();
 	}
 	else
 	{
-		reject({error: "NETWORK_ERROR", got: "Found no method of interacting with the internet. What environment have you put me in?!"});
+		throw "Found no method of interacting with the internet. What environment have you put me in?!";
 	}
 }),
+processAS = json => {
+	if("country"in json)
+	{
+		json.country = processCountry(json.country);
+	}
+	return json;
+},
 processCountry = json => {
 	json.english_name = json.name.EN;
 	json.native_name = json.name[json.language.code];
 	return json;
 };
+
+expose("as", asn=>new Promise((resolve, reject)=>{
+	ajax("https://apimon.de/as/" + encodeURIComponent(asn))
+	.then(json=>resolve(processAS(json)))
+	.catch(reject);
+}));
 
 expose("country", country=>new Promise((resolve, reject)=>{
 	ajax("https://apimon.de/country/" + encodeURIComponent(country))
@@ -121,7 +106,7 @@ expose("ip", arg=>new Promise((resolve, reject)=>{
 		}
 		if("as"in json)
 		{
-			json.as.country = processCountry(json.as.country);
+			json.as = processAS(json.as);
 		}
 		resolve(json);
 	}).catch(reject);
@@ -130,7 +115,7 @@ expose("ip", arg=>new Promise((resolve, reject)=>{
 expose("mc", arg=>new Promise((resolve, reject)=>{
 	ajax("https://apimon.de/mc/" + arg)
 	.then(json=>{
-		if(json.valid)
+		if("history"in json)
 		{
 			json.initial_name = json.history[0].name;
 		}
