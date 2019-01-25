@@ -1,12 +1,14 @@
+# apimon-js
+
 An abstraction for [Apimon](https://apimon.de/)'s HTTP APIs in Javascript.
 
-- <a href="https://github.com/hell-sh/apimon-js/tree/master/examples" target="_blank">Examples</a>
+- [Examples](https://github.com/hell-sh/apimon-js/tree/master/examples)
 
 ## For Websites
 
     <script src="https://cdn.hell.sh/apimon-js/latest/apimon.js" crossorigin="anonymous"></script>
 
-<a href="https://cdn.hell.sh/#apimon-js" target="_blank">Need SRI?</a>
+[Need SRI?](https://cdn.hell.sh/#apimon-js)
 
 ## Usage
 

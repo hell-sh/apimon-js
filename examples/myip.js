@@ -1,6 +1,8 @@
 const apimon = require("../apimon.js");
 
-apimon.myip().then(async ip=>{
+/* jshint ignore:start */
+async function a(ip)
+{
 	var pref, ipv4, ipv6;
 	if(ip.indexOf(":") == -1)
 	{
@@ -20,4 +22,6 @@ apimon.myip().then(async ip=>{
 	{
 		console.log("IPv" + pref + " seems to be preferred.");
 	}
-}).catch(console.error);
+}
+/* jshint ignore:end */
+apimon.myip().then(a).catch(console.error);

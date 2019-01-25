@@ -9,7 +9,7 @@ let expose = (name, func) => {
 	{
 		window.apimon[name] = func;
 	}
-}
+};
 if(typeof window != "undefined")
 {
 	window.apimon = {};
@@ -22,9 +22,9 @@ let ajax = url=>new Promise((resolve, reject)=>{
 			let data = "";
 			res.on("data", chunk=>data+=chunk);
 			res.on("end", ()=>{
-				if(res.statusCode == 301 && res.headers["location"])
+				if(res.statusCode == 301 && res.headers.location)
 				{
-					ajax("https://apimon.de" + res.headers["location"]).then(resolve).catch(reject);
+					ajax("https://apimon.de" + res.headers.location).then(resolve).catch(reject);
 				}
 				else
 				{
@@ -84,7 +84,7 @@ let ajax = url=>new Promise((resolve, reject)=>{
 			{
 				reject(xhr.responseJson ? xhr.responseJson : {error: "INVALID_STATUS", got: xhr.status});
 			}
-		})
+		});
 		xhr.addEventListener("error", err=>reject({error: "NETWORK_ERROR", got: err}));
 		xhr.open("GET", url);
 		xhr.send();
@@ -98,7 +98,7 @@ processCountry = json => {
 	json.english_name = json.name.EN;
 	json.native_name = json.name[json.language.code];
 	return json;
-}
+};
 
 expose("country", country=>new Promise((resolve, reject)=>{
 	ajax("https://apimon.de/country/" + encodeURIComponent(country))
