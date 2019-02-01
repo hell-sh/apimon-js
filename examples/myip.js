@@ -1,5 +1,5 @@
+// Copyright (c) 2019 Hell.sh
 const apimon = require("../apimon.js");
-
 // JSHint doesn't yet support async so it goes completely nuts here.
 /* jshint ignore:start */
 async function a(ip)

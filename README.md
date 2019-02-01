@@ -12,7 +12,7 @@ An abstraction for [Apimon](https://apimon.de/)'s HTTP APIs in Javascript.
 
 ## Usage
 
-Once you have included apimon-js either via `const apimon = require("apimon");` or the HTML tag seen above, you can access `apimon` which has a function for each of the [Apimon HTTP APIs](https://apimon.de/http-apis) mapped (except for "Generate QR Code"), e.g. `https://apimon.de/ip/arg` = `apimon.ip(arg)`.
+Once you have included apimon-js either via `const apimon = require("apimon");` or the HTML tag seen above, you can access `apimon` which has a function for [every Apimon HTTP API](https://apimon.de/http-apis) (except for "Generate QR Code"), e.g. `https://apimon.de/ip/arg` = `apimon.ip(arg)`.
 
 Additionally, `apimon.myip()`, `.myipv4()`, and `.myipv6()` functions are available.
 

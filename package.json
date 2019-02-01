@@ -1,6 +1,6 @@
 {
   "name": "apimon",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "An abstraction for Apimon's HTTP APIs in Javascript.",
   "main": "apimon.js",
   "repository": {

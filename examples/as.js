@@ -1,5 +1,5 @@
+// Copyright (c) 2019 Hell.sh
 const apimon = require("../apimon.js");
-
 if(process.argv.length == 3)
 {
 	apimon.as(process.argv[2]).then(result => {
