@@ -105,6 +105,11 @@
 				res += "\nBased in: " + countryForHumans(json.country).split("\n").join("\n| ");
 			}
 		}
+		if(json.abuse_contacts)
+		{
+			res += "\nAbuse Contacts:";
+			json.abuse_contacts.forEach(contact => res += "\n- " + contact);
+		}
 		return res;
 	},
 	processCountry = json => {
