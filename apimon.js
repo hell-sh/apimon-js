@@ -11,10 +11,24 @@
 		{
 			window.apimon[name] = func;
 		}
+	},
+	exposeHI = (name, func) => {
+		if(typeof exports != "undefined")
+		{
+			exports.hi[name] = func;
+		}
+		if(typeof window != "undefined")
+		{
+			window.apimon.hi[name] = func;
+		}
 	};
+	if(typeof exports != "undefined")
+	{
+		exports["hi"] = {};
+	}
 	if(typeof window != "undefined")
 	{
-		window.apimon = {};
+		window.apimon = {hi: {}};
 	}
 	let ajax = url => new Promise((resolve, reject) => {
 		if(typeof require != "undefined")
@@ -74,14 +88,47 @@
 		}
 		return json;
 	},
+	ASforHumans = json => {
+		let res = "AS" + json.number + "\nName: " + json.name;
+		if(json.org)
+		{
+			res += "\nOwner: " + json.org;
+			if(json.country)
+			{
+				res += "\nBased in: " + countryForHumans(json.country).split("\n").join("\n| ");
+			}
+		}
+		return res;
+	},
 	processCountry = json => {
 		json.english_name = json.name.EN;
 		json.native_name = json.name[json.language.code];
 		return json;
+	},
+	countryForHumans = json => {
+		let res = json.name.EN + " (" + json.alpha2_code + ")";
+		if(json.name.EN != json.name[json.language.code])
+		{
+			res += "\nNative name: " + json.name[json.language.code];
+		}
+		res += "\nCapital: " + json.capital;
+		res += "\nTotal Area: " + json["total_area_km²"] + " km²";
+		res += "\nPopulation: " + json.population;
+		res += "\nIDD Code: +" + json.idd_code;
+		res += "\nccTLD: ." + json.cctld;
+		res += "\nLanguage: " + json.language.name + " (" + json.language.code + ")";
+		res += "\nCurrency: " + json.currency.name + " (" + json.currency.code + ")\n";
+		res += json.eu_member ? "Part of the EU." : "Not a member of the EU.";
+		return res;
 	};
 	expose("as", asn=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/as/" + encodeURIComponent(asn))
 		.then(json=>resolve(processAS(json)))
+		.catch(reject);
+	}));
+	exposeHI("as", asn=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/as/" + encodeURIComponent(asn))
+		.then(json=>resolve(ASforHumans(json)))
 		.catch(reject);
 	}));
 	expose("country", country=>new Promise((resolve, reject)=>{
@@ -89,9 +136,45 @@
 		.then(json=>resolve(processCountry(json)))
 		.catch(reject);
 	}));
+	exposeHI("country", country=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/country/" + encodeURIComponent(country))
+		.then(json=>resolve(countryForHumans(json)))
+		.catch(reject);
+	}));
 	expose("dns", hostname=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/dns/" + encodeURIComponent(hostname))
 		.then(json=>resolve(json))
+		.catch(reject);
+	}));
+	exposeHI("dns", hostname=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/dns/" + encodeURIComponent(hostname))
+		.then(json=>{
+			let res = "";
+			for(let recordType in json)
+			{
+				if(recordType == "SOA")
+				{
+					res += "SOA\t" + Object.values(json.SOA).join(" ") + "\n";
+				}
+				else if(recordType == "CNAME")
+				{
+					res += "CNAME\t" + json.CNAME + "\n";
+				}
+				else if(recordType == "MX" || recordType == "SRV")
+				{
+					json[recordType].forEach(record => {
+						res += recordType + "\t" + Object.values(record).join(" ") + "\n";
+					});
+				}
+				else
+				{
+					json[recordType].forEach(value => {
+						res += recordType + "\t" + value + "\n";
+					});
+				}
+			}
+			resolve(res.trimRight());
+		})
 		.catch(reject);
 	}));
 	expose("ip", arg=>new Promise((resolve, reject)=>{
@@ -108,6 +191,29 @@
 			resolve(json);
 		}).catch(reject);
 	}));
+	exposeHI("ip", arg=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/ip/" + encodeURIComponent(arg))
+		.then(json=>{
+			let res = json.ip_address;
+			if("hostname" in json)
+			{
+				res += " (" + json.hostname + ")";
+			}
+			if(json.country)
+			{
+				res += "\nCountry: " + countryForHumans(json.country).split("\n").join("\n| ");
+				res += "\nRegion: " + json.region;
+				res += "\nCity: " + json.city.name;
+				res += "\nZip Code: " + json.zip_code;
+				res += "\nUTC Offset: " + json.utc_offset;
+			}
+			if(json.as)
+			{
+				res += "\nAS: " + ASforHumans(json.as).split("\n").join("\n| ");
+			}
+			resolve(res);
+		}).catch(reject);
+	}));
 	expose("mc", arg=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/mc/" + arg)
 		.then(json=>{
@@ -118,9 +224,59 @@
 			resolve(json);
 		}).catch(reject);
 	}));
+	exposeHI("mc", arg=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/mc/" + arg)
+		.then(json=>{
+			let res=json.name;
+			if(!json.paid)
+			{
+				if(!json.migrated)
+				{
+					res += "\nUnmigrated Demo Account";
+				}
+				else
+				{
+					res += "\nDemo Account";
+				}
+			}
+			else if(!json.migrated)
+			{
+				res += "\nUnmigrated Account";
+			}
+			res += "\nUUID: " + json.id;
+			if(json.history.length > 1)
+			{
+				json.history.forEach(entry => {
+					if(entry.timestamp)
+					{
+						res += "\n- Changed to " + entry.name + " on " + (new Date(entry.timestamp)).toString();
+					}
+					else
+					{
+						res += "\n- Registered as " + entry.name;
+					}
+				});
+			}
+			resolve(res);
+		}).catch(reject);
+	}));
 	expose("redirect", arg=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/redirect/" + encodeURIComponent(arg))
 		.then(json=>resolve(json))
+		.catch(reject);
+	}));
+	exposeHI("redirect", arg=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/redirect/" + encodeURIComponent(arg))
+		.then(json=>{
+			if(json.valid)
+			{
+				resolve("Destination: " + json.destination);
+			}
+			else
+			{
+				resolve("Invalid URL.");
+			}
+		})
 		.catch(reject);
 	}));
 	expose("myip", ()=>new Promise((resolve, reject)=>{

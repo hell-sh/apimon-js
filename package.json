@@ -1,7 +1,10 @@
 {
   "name": "apimon",
-  "version": "2.1.1",
-  "description": "An abstraction for Apimon's HTTP APIs in Javascript.",
+  "version": "2.2.0",
+  "description": "Get Apimon's power in Javascript without a hassle.",
+  "bin": {
+    "apimon": "cli.js"
+  },
   "main": "apimon.js",
   "repository": {
     "type": "git",
