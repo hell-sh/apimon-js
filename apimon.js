@@ -43,14 +43,17 @@
 					}
 					else
 					{
-						let json = (res.headers["content-type"] == "application/json" ? JSON.parse(data) : null);
-						if(res.statusCode == 200)
+						if(res.statusCode != 200)
 						{
-							resolve(json ? json : data);
+							reject(res.statusCode);
+						}
+						else if(res.headers["content-type"] == "application/json")
+						{
+							resolve(JSON.parse(data));
 						}
 						else
 						{
-							reject(res.statusCode);
+							resolve(data);
 						}
 					}
 				});
@@ -63,13 +66,17 @@
 		{
 			let xhr=new XMLHttpRequest();
 			xhr.addEventListener("load", ()=>{
-				if(xhr.status == 200)
+				if(xhr.status != 200)
 				{
-					resolve(xhr.responseJson ? xhr.responseJson : xhr.responseText);
+					reject(xhr.status);
+				}
+				else if(xhr.getResponseHeader("content-type"))
+				{
+					resolve(JSON.parse(xhr.responseText));
 				}
 				else
 				{
-					reject(xhr.status);
+					resolve(xhr.responseText);
 				}
 			});
 			xhr.addEventListener("error", err=>reject(0));
@@ -294,4 +301,14 @@
 		.then(ip=>resolve(ip))
 		.catch(reject);
 	}));
+	exposeHI("errors", {
+		0: "there was a network error",
+		400: "you provided an invalid argument",
+		404: "request is valid but no information was found",
+		418: "you've somehow reached our kitchen",
+		521: "our server is offline or overloaded",
+		522: "our server is offline or overloaded",
+		523: "our server is offline or overloaded",
+		524: "our server is offline or overloaded"
+	});
 })();

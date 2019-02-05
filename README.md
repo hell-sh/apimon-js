@@ -27,5 +27,6 @@ All of these functions will return a Promise, which, if resolved, will provide y
 Instead of `apimon.`, you can also use `apimon.hi.` to get a humanly-readable `\n`-terminated string in response to these functions.
 
 If an error occured, the Promise will be rejected with the HTTP error code or 0 in the case of a network error. See [Error Handling](https://apimon.de/http-apis#errors) for information on what HTTP error codes mean.
+`apimon.hi` also exposes the `errors` object which contains the meanings of some reject codes in English.
 
 Additionally, `apimon.myip()`, `.myipv4()`, and `.myipv6()` functions are also available, which will provide a string rather than an object if resolved.
