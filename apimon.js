@@ -70,7 +70,7 @@
 				{
 					reject(xhr.status);
 				}
-				else if(xhr.getResponseHeader("content-type"))
+				else if(xhr.getResponseHeader("content-type") == "application/json")
 				{
 					resolve(JSON.parse(xhr.responseText));
 				}
