@@ -21,6 +21,10 @@
 		{
 			window.apimon.hi[name] = func;
 		}
+	},
+	exposeBoth = (name, func) => {
+		expose(name, func);
+		exposeHI(name, func);
 	};
 	if(typeof exports != "undefined")
 	{
@@ -291,17 +295,17 @@
 		})
 		.catch(reject);
 	}));
-	expose("myip", ()=>new Promise((resolve, reject)=>{
+	exposeBoth("myip", ()=>new Promise((resolve, reject)=>{
 		ajax("https://ip.apimon.de/")
 		.then(ip=>resolve(ip))
 		.catch(reject);
 	}));
-	expose("myipv4", ()=>new Promise((resolve, reject)=>{
+	exposeBoth("myipv4", ()=>new Promise((resolve, reject)=>{
 		ajax("https://ipv4.apimon.de/")
 		.then(ip=>resolve(ip))
 		.catch(reject);
 	}));
-	expose("myipv6", ()=>new Promise((resolve, reject)=>{
+	exposeBoth("myipv6", ()=>new Promise((resolve, reject)=>{
 		ajax("https://ipv6.apimon.de/")
 		.then(ip=>resolve(ip))
 		.catch(reject);
