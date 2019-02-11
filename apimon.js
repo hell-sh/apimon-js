@@ -295,6 +295,114 @@
 		})
 		.catch(reject);
 	}));
+	expose("whois", arg=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/whois/" + encodeURIComponent(arg))
+		.then(json=>{
+			for(let k in json)
+			{
+				if("country"in json[k])
+				{
+					json[k].country=countryForHumans(json[k].country);
+				}
+			}
+		})
+		.catch(reject);
+	}));
+	exposeHI("whois", arg=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/whois/" + encodeURIComponent(arg))
+		.then(json=>{
+			console.log(json.domain);
+			if(json.status)
+			{
+				if(json.status.length > 1)
+				{
+					console.log("Status:");
+					json.status.forEach(status=>console.log("- "+status));
+				}
+				else
+				{
+					console.log("Status: "+json.status[0]);
+				}
+			}
+			let contactForHumans=data=>{
+				let res;
+				if(data.name)
+				{
+					res = data.name;
+					if(data.org)
+					{
+						res += "\n" + data.org;
+					}
+				}
+				else if(data.org)
+				{
+					res = data.org;
+				}
+				else
+				{
+					res = "<name unknown>";
+				}
+				if(data.country)
+				{
+					res += "\nCountry: " + data.country.name.EN;
+				}
+				if(data.city)
+				{
+					res += "\nCity: " + data.city;
+				}
+				if(data.region)
+				{
+					res += "\nRegion: " + data.region;
+				}
+				if(data.zip_code)
+				{
+					res += "\nZip Code: " + data.zip_code;
+				}
+				if(data.street)
+				{
+					res += "\nStreet: " + data.street;
+				}
+				if(data.iana_id)
+				{
+					res += "\nIANA ID: " + data.iana_id;
+				}
+				if(data.email)
+				{
+					res += "\nEmail: " + data.email;
+				}
+				if(data.phone)
+				{
+					res += "\nPhone: " + data.phone;
+				}
+				if(data.phone)
+				{
+					res += "\nURL: " + data.url;
+				}
+				return res;
+			};
+			if(json.registrar)
+			{
+				console.log("Registrar: "+contactForHumans(json.registrar).split("\n").join("\n| "));
+			}
+			if(json.reseller)
+			{
+				console.log("Reseller: "+contactForHumans(json.reseller).split("\n").join("\n| "));
+			}
+			if(json.registrant)
+			{
+				console.log("Registrant: "+contactForHumans(json.registrant).split("\n").join("\n| "));
+			}
+			if(json.admin)
+			{
+				console.log("Admin: "+contactForHumans(json.admin).split("\n").join("\n| "));
+			}
+			if(json.tech)
+			{
+				console.log("Tech: "+contactForHumans(json.tech).split("\n").join("\n| "));
+			}
+		})
+		.catch(reject);
+	}));
 	exposeBoth("myip", ()=>new Promise((resolve, reject)=>{
 		ajax("https://ip.apimon.de/")
 		.then(ip=>resolve(ip))

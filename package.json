@@ -1,6 +1,6 @@
 {
   "name": "apimon",
-  "version": "2.3.4",
+  "version": "2.4.0",
   "description": "Get Apimon's power in Javascript without a hassle.",
   "bin": {
     "apimon": "cli.js"
