@@ -311,17 +311,17 @@
 	exposeHI("whois", arg=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/whois/" + encodeURIComponent(arg))
 		.then(json=>{
-			console.log(json.domain);
+			let res=json.domain;
 			if(json.status)
 			{
 				if(json.status.length > 1)
 				{
-					console.log("Status:");
-					json.status.forEach(status=>console.log("- "+status));
+					res+="\nStatus:";
+					json.status.forEach(status=>res+="\n- "+status);
 				}
 				else
 				{
-					console.log("Status: "+json.status[0]);
+					res+="\nStatus: "+json.status[0];
 				}
 			}
 			let contactForHumans=data=>{
@@ -374,7 +374,7 @@
 				{
 					res += "\nPhone: " + data.phone;
 				}
-				if(data.phone)
+				if(data.url)
 				{
 					res += "\nURL: " + data.url;
 				}
@@ -382,24 +382,25 @@
 			};
 			if(json.registrar)
 			{
-				console.log("Registrar: "+contactForHumans(json.registrar).split("\n").join("\n| "));
+				res+="\nRegistrar: "+contactForHumans(json.registrar).split("\n").join("\n| ");
 			}
 			if(json.reseller)
 			{
-				console.log("Reseller: "+contactForHumans(json.reseller).split("\n").join("\n| "));
+				res+="\nReseller: "+contactForHumans(json.reseller).split("\n").join("\n| ");
 			}
 			if(json.registrant)
 			{
-				console.log("Registrant: "+contactForHumans(json.registrant).split("\n").join("\n| "));
+				res+="\nRegistrant: "+contactForHumans(json.registrant).split("\n").join("\n| ");
 			}
 			if(json.admin)
 			{
-				console.log("Admin: "+contactForHumans(json.admin).split("\n").join("\n| "));
+				res+="\nAdmin: "+contactForHumans(json.admin).split("\n").join("\n| ");
 			}
 			if(json.tech)
 			{
-				console.log("Tech: "+contactForHumans(json.tech).split("\n").join("\n| "));
+				res+="\nTech: "+contactForHumans(json.tech).split("\n").join("\n| ");
 			}
+			resolve(res);
 		})
 		.catch(reject);
 	}));
