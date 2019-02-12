@@ -117,8 +117,11 @@
 		return res;
 	},
 	processCountry = json => {
-		json.english_name = json.name.EN;
-		json.native_name = json.name[json.language.code];
+		if(json.name)
+		{
+			json.english_name = json.name.EN;
+			json.native_name = json.name[json.language.code];
+		}
 		return json;
 	},
 	countryForHumans = json => {
@@ -300,11 +303,12 @@
 		.then(json=>{
 			for(let k in json)
 			{
-				if("country"in json[k])
+				if(typeof json[k]=="object"&&"country"in json[k])
 				{
-					json[k].country=countryForHumans(json[k].country);
+					json[k].country=processCountry(json[k].country);
 				}
 			}
+			resolve(json);
 		})
 		.catch(reject);
 	}));
@@ -342,7 +346,7 @@
 				{
 					res = "<name unknown>";
 				}
-				if(data.country)
+				if(data.country&&data.country.name)
 				{
 					res += "\nCountry: " + data.country.name.EN;
 				}
