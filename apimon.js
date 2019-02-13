@@ -139,6 +139,62 @@
 		res += "\nCurrency: " + json.currency.name + " (" + json.currency.code + ")\n";
 		res += json.eu_member ? "Part of the EU." : "Not a member of the EU.";
 		return res;
+	},
+	contactForHumans=data=>{
+		let res;
+		if(data.name)
+		{
+			res = data.name;
+			if(data.org)
+			{
+				res += "\n" + data.org;
+			}
+		}
+		else if(data.org)
+		{
+			res = data.org;
+		}
+		else
+		{
+			res = "<name unknown>";
+		}
+		if(data.country&&data.country.name)
+		{
+			res += "\nCountry: " + data.country.name.EN;
+		}
+		if(data.city)
+		{
+			res += "\nCity: " + data.city;
+		}
+		if(data.region)
+		{
+			res += "\nRegion: " + data.region;
+		}
+		if(data.zip_code)
+		{
+			res += "\nZip Code: " + data.zip_code;
+		}
+		if(data.street)
+		{
+			res += "\nStreet: " + data.street;
+		}
+		if(data.iana_id)
+		{
+			res += "\nIANA ID: " + data.iana_id;
+		}
+		if(data.email)
+		{
+			res += "\nEmail: " + data.email;
+		}
+		if(data.phone)
+		{
+			res += "\nPhone: " + data.phone;
+		}
+		if(data.url)
+		{
+			res += "\nURL: " + data.url;
+		}
+		return res;
 	};
 	expose("as", asn=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/as/" + encodeURIComponent(asn))
@@ -150,6 +206,7 @@
 		.then(json=>resolve(ASforHumans(json)))
 		.catch(reject);
 	}));
+	exposeHI("ASforHumans", ASforHumans);
 	expose("country", country=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/country/" + encodeURIComponent(country))
 		.then(json=>resolve(processCountry(json)))
@@ -160,6 +217,7 @@
 		.then(json=>resolve(countryForHumans(json)))
 		.catch(reject);
 	}));
+	exposeHI("countryForHumans", countryForHumans);
 	expose("dns", hostname=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/dns/" + encodeURIComponent(hostname))
 		.then(json=>resolve(json))
@@ -328,62 +386,6 @@
 					res+="\nStatus: "+json.status[0];
 				}
 			}
-			let contactForHumans=data=>{
-				let res;
-				if(data.name)
-				{
-					res = data.name;
-					if(data.org)
-					{
-						res += "\n" + data.org;
-					}
-				}
-				else if(data.org)
-				{
-					res = data.org;
-				}
-				else
-				{
-					res = "<name unknown>";
-				}
-				if(data.country&&data.country.name)
-				{
-					res += "\nCountry: " + data.country.name.EN;
-				}
-				if(data.city)
-				{
-					res += "\nCity: " + data.city;
-				}
-				if(data.region)
-				{
-					res += "\nRegion: " + data.region;
-				}
-				if(data.zip_code)
-				{
-					res += "\nZip Code: " + data.zip_code;
-				}
-				if(data.street)
-				{
-					res += "\nStreet: " + data.street;
-				}
-				if(data.iana_id)
-				{
-					res += "\nIANA ID: " + data.iana_id;
-				}
-				if(data.email)
-				{
-					res += "\nEmail: " + data.email;
-				}
-				if(data.phone)
-				{
-					res += "\nPhone: " + data.phone;
-				}
-				if(data.url)
-				{
-					res += "\nURL: " + data.url;
-				}
-				return res;
-			};
 			if(json.registrar)
 			{
 				res+="\nRegistrar: "+contactForHumans(json.registrar).split("\n").join("\n| ");
@@ -408,6 +410,7 @@
 		})
 		.catch(reject);
 	}));
+	exposeHI("contactForHumans", contactForHumans);
 	exposeBoth("myip", ()=>new Promise((resolve, reject)=>{
 		ajax("https://ip.apimon.de/")
 		.then(ip=>resolve(ip))

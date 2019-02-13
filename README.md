@@ -25,7 +25,7 @@ All of these functions will return a Promise, which, if resolved, will provide y
 - **mc**
   - `initial_name`
 
-Instead of `apimon.`, you can also use `apimon.hi.` to get a humanly-readable `\n`-terminated string in response to these functions.
+Instead of `apimon.`, you can also use `apimon.hi.` to get a humanly-readable `\n`-terminated string in response to these functions. Additionally, `apimon.hi.` also exposes `ASforHumans`, `countryForHumans`, and `contactForHumans` so you can turn AS, country, and WHOIS contact objects into humanly-readable `\n`-terminated strings, respectively.
 
 If an error occured, the Promise will be rejected with the HTTP error code or 0 in the case of a network error. See [Error Handling](https://apimon.de/http-apis#errors) for information on what HTTP error codes mean.
 `apimon.hi` also exposes the `errors` object which contains the meanings of some reject codes in English.
