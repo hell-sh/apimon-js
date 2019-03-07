@@ -291,8 +291,8 @@
 			resolve(res);
 		}).catch(reject);
 	}));
-	expose("mc", arg=>new Promise((resolve, reject)=>{
-		ajax("https://apimon.de/mc/" + arg)
+	expose("mcuser", arg=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/mcuser/" + arg)
 		.then(json=>{
 			if("history"in json)
 			{
@@ -301,8 +301,8 @@
 			resolve(json);
 		}).catch(reject);
 	}));
-	exposeHI("mc", arg=>new Promise((resolve, reject)=>{
-		ajax("https://apimon.de/mc/" + arg)
+	exposeHI("mcuser", arg=>new Promise((resolve, reject)=>{
+		ajax("https://apimon.de/mcuser/" + arg)
 		.then(json=>{
 			let res=json.name;
 			if(!json.paid)
