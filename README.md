@@ -22,7 +22,7 @@ All of these functions will return a Promise, which, if resolved, will provide y
 - **country**
   - `english_name`
   - `native_name`
-- **mc**
+- **mcuser**
   - `initial_name`
 
 Instead of `apimon.`, you can also use `apimon.hi.` to get a humanly-readable `\n`-terminated string in response to these functions. Additionally, `apimon.hi.` also exposes `ASforHumans`, `countryForHumans`, and `contactForHumans` so you can turn AS, country, and WHOIS contact objects into humanly-readable `\n`-terminated strings, respectively.
