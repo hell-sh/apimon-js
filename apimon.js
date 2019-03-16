@@ -195,7 +195,8 @@
 			res += "\nURL: " + data.url;
 		}
 		return res;
-	};
+	},
+	addDashesToUUID=i=>i.substr(0,8)+"-"+i.substr(8,4)+"-"+i.substr(12,4)+"-"+i.substr(16,4)+"-"+i.substr(20);
 	expose("as", asn=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/as/" + encodeURIComponent(asn))
 		.then(json=>resolve(processAS(json)))
@@ -294,10 +295,8 @@
 	expose("mcuser", arg=>new Promise((resolve, reject)=>{
 		ajax("https://apimon.de/mcuser/" + arg)
 		.then(json=>{
-			if("history"in json)
-			{
-				json.initial_name = json.history[0].name;
-			}
+			json.full_id = addDashesToUUID(json.id);
+			json.initial_name = json.history[0].name;
 			resolve(json);
 		}).catch(reject);
 	}));
@@ -320,7 +319,7 @@
 			{
 				res += "\nUnmigrated Account";
 			}
-			res += "\nUUID: " + json.id;
+			res += "\nUUID: " + json.id + "\nWith Dashes: " + addDashesToUUID(json.id);
 			if(json.history.length > 1)
 			{
 				json.history.forEach(entry => {

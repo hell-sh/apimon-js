@@ -20,10 +20,11 @@ The "My IP Address" endpoints are accessible using `apimon.myip()`, `.myipv4()`,
 All of these functions will return a Promise, which, if resolved, will provide you with an object corresponding to the JSON object or plain text that Apimon has returned; however, some objects will have additional values provided exclusively by apimon-js:
 
 - **country**
-  - `english_name`
-  - `native_name`
+  - `.english_name` - alias for `.name.EN`
+  - `.native_name` - alias for `.name[.language.code]`
 - **mcuser**
-  - `initial_name`
+  - `.initial_name` - alias for `.history[0].name`
+  - `.full_id` - `.id` but with dashes
 
 Instead of `apimon.`, you can also use `apimon.hi.` to get a humanly-readable `\n`-terminated string in response to these functions. Additionally, `apimon.hi.` also exposes `ASforHumans`, `countryForHumans`, and `contactForHumans` so you can turn AS, country, and WHOIS contact objects into humanly-readable `\n`-terminated strings, respectively.
 
