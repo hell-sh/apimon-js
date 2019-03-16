@@ -2,7 +2,7 @@
 const apimon = require("../apimon.js");
 if(process.argv.length == 3)
 {
-	apimon.mc(process.argv[2]).then(result => {
+	apimon.mcuser(process.argv[2]).then(result => {
 		if(result.history.length > 1)
 		{
 			console.log(result.name + " was intially named " + result.initial_name);
@@ -24,5 +24,5 @@ if(process.argv.length == 3)
 }
 else
 {
-	console.log("Syntax: node mc.js <uuid, username or old username followed by /old>");
+	console.log("Syntax: node mcuser.js <uuid, username or old username followed by /old>");
 }
